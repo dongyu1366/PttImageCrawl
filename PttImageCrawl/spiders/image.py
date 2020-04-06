@@ -3,7 +3,7 @@ import scrapy
 from ..items import PttimagecrawlItem
 
 
-# 用於篩選符合圖片格式的URL
+# 篩選符合圖片格式的URL
 def isImageFormat(link):
     if(link.find('.jpg') > -1 or link.find('.png') > -1 or link.find('.gif') > -1 or link.find('.jpeg') > -1):
        return True

@@ -23,20 +23,20 @@ class PttimagecrawlPipeline(ImagesPipeline):
         return request_objs # 父類中必須返回這個列表，給其他函式使用
 
     def file_path(self, request, response=None, info=None):
-        # path獲取父類中file_path方法返回的值即‘full/hash.jpg' hash是圖片的雜湊值
+        # path獲取父類中file_path方法返回的值‘full/hash.jpg'，hash是圖片的雜湊值
         path = super(PttimagecrawlPipeline, self).file_path(request, response, info)
         category = request.item.get('title')                 #request即前一個函式返回的列表中的每一項，所以有item屬性
         category_path = os.path.join(category)               # 建立每個種類的路徑
-        image_name = path.replace('full/', '')               # 去掉原本的'full/'，只留下檔名
+        image_name = path.replace('full/', '')               # 去掉原本的'full/'，只留下hash值作為檔名
         image_path = f'{category_path}/{image_name}'         # 圖片完整的路徑和檔名
         return image_path
 
+    # 更改圖片儲存方式，使其能正確下載gif
     def check_gif(self, image):
         if image.format is None:
             return True
 
     def persist_gif(self, key, data, info):
-        root, ext = os.path.splitext(key)
         absolute_path = self.store._get_filesystem_path(key)
         self.store._mkdir(os.path.dirname(absolute_path), info)
         f = open(absolute_path, 'wb')  # use 'b' to write binary data.
